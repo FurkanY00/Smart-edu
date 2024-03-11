@@ -16,7 +16,16 @@ const UserSchema = new Schema({
   password:{
     type: String,
     require: true,
-  }
+  },
+  role:{
+    type:String,
+    enum:["student","teacher","admin"],
+    default:"student"
+  },
+  courses:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Course'
+  }]
 });
 
 UserSchema.pre('save',function(next){
