@@ -11,12 +11,14 @@ exports.createCourse = async (req, res) => {
       user: req.session.userID
     });
     
+    req.flash("success",`${course.name} has been create succesfully`);
+
     res.status(201).redirect("/courses");
-  } catch (error) {
-    res.status(400).json({
-      status: "fail",
-      error,
-    });
+  } catch (error) {    
+    req.flash("error",`${course.name} has been removed sucessfully!`);
+    res.status(201).redirect("/courses");
+
+  
   }
 };
 
@@ -103,6 +105,21 @@ exports.releaseCourse = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       status: "fail",
+      error,
+    });
+  }
+};
+exports.deleteCourse = async (req, res) => {
+  try {    
+    const course= await Course.findOneAndDelete({ slug: req.params.slug });
+
+    req.flash("error",`${course.name} has been removed sucessfully!`);
+
+    res.status(200).redirect('/users/dashboard');
+
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
       error,
     });
   }

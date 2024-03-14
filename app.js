@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore =require("connect-mongo");
+const flash = require('connect-flash');
+const methodOverride=require('method-override');
 const pageRoute = require("./routes/pageRouter");
 const courseRoute = require("./routes/courseRouter");
 const categoryRoute = require("./routes/categoryRoute");
@@ -34,9 +36,15 @@ app.use(
     resave: false,
     saveUninitialized: true,
     store:MongoStore.create({mongoUrl:'mongodb://localhost/smartedu-db'})
-  })
-  
-);
+  }));
+  app.use(flash());
+  app.use((req, res, next)=> {
+    res.locals.flashMessages = req.flash();
+    next();
+  });
+  app.use(methodOverride('_method',{
+    methods:['POST','GET'],
+  }));
 
 //Routers
 app.use("*", (req, res, next) => {
